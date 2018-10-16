@@ -22,4 +22,8 @@ urlpatterns = [
     path('', views.expenseIndex),
     path('login_data/', views.loginData),
     path('register_data/', views.registerData),
+    path('detail/', views.showdetails),
+    path('save/', views.saveDetails),
+    path('showfriend/', views.showfriends),
+    path('delete/', views.deleteRecord),
 ]

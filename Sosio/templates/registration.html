@@ -99,6 +99,7 @@ input[type=submit]:hover {
 
   <form action="/register_data/" method="post">
        {% csrf_token %}
+      <p style="color: red;"> {{ invalid }} </p>
     <label>First Name</label>
     <input type="text"  name="fname" placeholder="First name" required>
 
@@ -115,7 +116,7 @@ input[type=submit]:hover {
     <input type="Password" name="pass" placeholder="Password" required>
 
     <input type="submit" value="Submit">
-      {{ message }}
+        {{ message }}
   </form>
 </div>
 <div align="center">

@@ -23,7 +23,7 @@
     }
 
 
-    input[type=text], select {
+    input[type=email], select {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -68,7 +68,7 @@ input[type=submit]:hover {
         }
     }
      a:link, a:visited {
-        color: #38488f;
+        {#color: #38488f;#}
         text-decoration: none;
     }
 
@@ -78,12 +78,17 @@ input[type=submit]:hover {
 <body>
 
 <div >
-    {% csrf_token %}
-  <form action="/login_data/" method="post">
-    <label for="fname">User Name</label>
-    <input type="text"  name="uname" placeholder="Username" required>
 
-    <label for="lname">Password</label>
+  <form action="/login_data/" method="post">
+      {% csrf_token %}
+          <p style="color: limegreen" align="center">{{  message }}</p>
+
+          <p style="color: red" align="center">{{  msg }}</p>
+
+    <label>Email id</label>
+    <input type="email"  name="email" placeholder="Username" required>
+
+    <label>Password</label>
     <input type="Password" name="pass" placeholder="Password" required>
     <input type="submit" value="Submit">
   </form>

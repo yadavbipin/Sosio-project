@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style type="text/css">
+  html {
+ height: 100%;
+
+}
+
+body {
+  height: 100%;
+  padding-bottom: 30px;
+}
+
+
+#t2{
+  width: 0%;
+}
+
+input{
+    border-radius: 5px;
+}
+
+select{
+    border-radius:  5px;
+}
+
+
+body {
+      font: 15px Montserrat, sans-serif;
+      line-height: 1.8;
+
+  }
+  p {font-size: 16px;}
+  .margin{margin-bottom: 100px;}
+
+  .container-fluid {
+      padding-top: 70px;
+      padding-bottom: 70px;
+      bottom-margin: 0;
+       background-color: #474e5d; /* Dark Blue */
+
+  }
+
+  .navbar {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      border: 10px;
+      border-radius: 0;
+      margin-bottom: 0;
+      font-size: 12px;
+      letter-spacing: 5px;
+  }
+  .navbar-nav  li a:hover {
+      color: #1abc9c !important;
+  }
+      .jumbotron{
+          background-size: cover;
+          background-color: #1abc9c;
+          padding-bottom: 20%;
+          margin: 0;
+
+      }
+  </style>
+</head>
+<body>
+
+
+<nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Logo</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-left">
+        <li><a href="#">Home</a></li>
+         <li><a href="">Expenses</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href=""><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Modal -->
+
+
+<div class="jumbotron navbar-collapse">
+  <form action="/detail/" method="POST" >
+      {% csrf_token %}
+    <table id="t2" class="table" align="left">
+        <tbody>
+
+          <tr>
+              <td>Want to split Bill</td>
+            <td>
+                <input type="checkbox" name="split"  id="myCheck" onclick="myFunction()"> with friends<br>
+            </td>
+          </tr>
+
+          <tr>
+            <td>select Date:</td>
+            <td><input type="date" name="date" required></td>
+          </tr>
+
+          <tr>
+            <td>Select Expense Name:</td>
+
+              <td>Amount:</td>
+
+          </tr>
+          <tr>
+              <td><select name="expenselist" form="carform">
+                  <option value="">Home expenses</option>
+                  <option value="">Food expenses</option>
+                  <option value="">Child-related expenses</option>
+                  <option value="">Debt obligations</option>
+                  <option value="">Health care expenses</option>
+                  <option value="">Transportation expenses</option>
+                  <option value="">Personal care expenses</option>
+                  <option value="">Pet care expenses</option>
+                  <option value="">Entertainment expenses</option>
+                  <option value="">Miscellaneous expenses</option>
+</select> </td>
+              <td><input type="text" name="exp" required> </td>
+              <td><input type="Submit" value="ADD"> </td>
+          </tr>
+        </tbody>
+    </table>
+ </form>
+
+
+    <form name="myForm" method="POST" action="/save/" >
+        {% csrf_token %}
+<table id="t2" class="table" align="left" >
+        <tbody>
+          <tr >
+              <td><input type="text" id="text" style="display:none"  name="fname"></td>
+              <td><input type="submit" id="text1" style="display:none" value="ADD"></td>
+          </tr>
+
+        <tr>{{ m }}</tr>
+        </tbody>
+    </table>
+</form>
+<form method="POST" action="/showfriend/">
+    {% csrf_token %}
+    <table align="right">
+        <tr>
+
+        <td>show added friends:</td>
+        <td><input type="submit" value="show"></td>
+        </tr>
+    </table>
+</form>
+
+<div class="container">
+<div class="row">
+<div class="col-sm-4">
+ <form method="POST" action="/delete/">
+{% csrf_token%}
+    <table  align="right" class="table">
+        <thead>
+        <tr>
+            <th scope="col">Friends Name</th>
+{#            <th scope="col">Delete</th>#}
+        </tr>
+        </thead>
+    <tbody>
+
+        {% for x,y in d3.items %}
+            {% for i in y.values %}
+                <tr>
+                <td>{{ i }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+        <td><button name="delete" value="">Delete</button></td>
+        <tr>
+            <td align="center">{{ msg }}</td>
+        </tr>
+    </tbody>
+    </table>
+</form>
+</div>
+</div>
+</div>
+
+</div>
+<footer class="container-fluid bg-4 text-center">
+  <p> Copyright Reserved | 2018 | Made by bipin yadav<a href=""></a></p>
+</footer>
+
+<script >
+    var checkBox = document.getElementById("myCheck");
+    var text = document.getElementById("text");
+    var text1 = document.getElementById("text1");
+function myFunction() {
+
+    if (checkBox.checked == true) {
+        text.style.display = "block";
+        text1.style.display = "block";
+
+    } else {
+
+        text.style.display = "none";
+        text1.style.display = "none";
+    }
+}
+
+function validateForm() {
+    var x = document.forms["myForm"]["text"].value;
+    if (x == "") {
+        alert("Name must be filled out");
+        return false;
+    }
+}
+</script>
+</body>
+</html>
+
+
