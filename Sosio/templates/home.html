@@ -85,11 +85,11 @@ body {
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-left">
-        <li><a href="#">Home</a></li>
-         <li><a href="">Expenses</a></li>
+        <li><a href="/expenses.html/">Expenses</a></li>
+         <li><a href="/view/">View</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href=""><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
+        <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
       </ul>
     </div>
   </div>
@@ -100,6 +100,8 @@ body {
 <div class="jumbotron navbar-collapse">
   <form action="/detail/" method="POST" >
       {% csrf_token %}
+      {{ phone }}
+      <input type="hidden"  name="phno" value="{{ phone }}" >
     <table id="t2" class="table" align="left">
         <tbody>
 
@@ -122,28 +124,32 @@ body {
 
           </tr>
           <tr>
-              <td><select name="expenselist" form="carform">
-                  <option value="">Home expenses</option>
-                  <option value="">Food expenses</option>
-                  <option value="">Child-related expenses</option>
-                  <option value="">Debt obligations</option>
-                  <option value="">Health care expenses</option>
-                  <option value="">Transportation expenses</option>
-                  <option value="">Personal care expenses</option>
-                  <option value="">Pet care expenses</option>
-                  <option value="">Entertainment expenses</option>
-                  <option value="">Miscellaneous expenses</option>
+              <td><select name="expenselist" >
+                  <option selected="selected" disabled>select:</option>
+                  <option value="Home expenses">Home expenses</option>
+                  <option value="Food expenses">Food expenses</option>
+                  <option value="Child-related expenses">Child-related expenses</option>
+                  <option value="Debt obligations">Debt obligations</option>
+                  <option value="Health care expenses">Health care expenses</option>
+                  <option value="Transportation expense">Transportation expenses</option>
+                  <option value="Personal care expenses">Personal care expenses</option>
+                  <option value="Pet care expenses">Pet care expenses</option>
+                  <option value="Entertainment expenses">Entertainment expenses</option>
+                  <option value="Miscellaneous expenses">Miscellaneous expenses</option>
 </select> </td>
               <td><input type="text" name="exp" required> </td>
+              <td><input type="hidden" name="em" value=""> </td>
               <td><input type="Submit" value="ADD"> </td>
           </tr>
         </tbody>
     </table>
  </form>
 
-
+<table>
     <form name="myForm" method="POST" action="/save/" >
         {% csrf_token %}
+
+        <input type="hidden"  name="phno" value="{{ phone }}" >
 <table id="t2" class="table" align="left" >
         <tbody>
           <tr >
@@ -180,12 +186,11 @@ body {
         </thead>
     <tbody>
 
-        {% for x,y in d3.items %}
-            {% for i in y.values %}
-                <tr>
-                <td>{{ i }}</td>
-                </tr>
-            {% endfor %}
+        {% for x in d3 %}
+             <tr>
+                <td>{{ x.friend }}</td>
+             </tr>
+
         {% endfor %}
         <td><button name="delete" value="">Delete</button></td>
         <tr>
@@ -194,6 +199,12 @@ body {
     </tbody>
     </table>
 </form>
+<table>
+    <tr>
+        <td>{{ fd }}</td>
+        <tr>{{ s }}</tr>
+    </tr>
+</table>
 </div>
 </div>
 </div>

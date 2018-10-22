@@ -1,12 +1,18 @@
+import datetime
+
 from django.shortcuts import render
 
 # Create your views here.
 from firebase import firebase as fab
 
-from dailyExpense.models import registerdb
+from dailyExpense.models import registerdb, Userdetails, friendsList
+
 
 fa = fab.FirebaseApplication("https://expense-f7db5.firebaseio.com/", None)
+phone = 0
 def expenseIndex(request):
+    if 'phone' in request.session:
+        del request.session['phone']
     return render(request, "expenses.html")
 
 
@@ -18,8 +24,10 @@ def loginData(request):
 
         v = registerdb.objects.filter(email=l_email, password=l_password).all()
         if (len(v) == 1):
-            message = {'message': "welcome"}
-            return render(request, "home.html", message)
+
+            mess = v[0].phone_no
+            request.session['phone'] = mess
+            return render(request, "home.html", {'phone': mess})
         else:
             msg = {'msg': "Invalid Email Id Or Password ! Dont have account please register"}
             return render(request, "login.html", msg)
@@ -50,58 +58,61 @@ def registerData(request):
 
 
 def showdetails(request):
-    dt = request.POST.get("date")
-    it = request.POST.get("items")
-    ex = request.POST.get("exp")
 
-    # fa = fab.FirebaseApplication("https://expense-f7db5.firebaseio.com/",None)
-    # d2 = fa.get("dailyexpenditure/", None)
-    # if d2 == None:
-    #     key = 101
-    #     d1 = {key:{'date': dt, 'items': it, 'expense': ex}}
-    #     fa.put("https://expense-f7db5.firebaseio.com/dailyexpenditure/", key, d1)
-    # else:
-    #     for x in d2:
-    #         key = x
-    #     key = int(key) + 1
-    #     d1 = {key:{'date': dt, 'items': it, 'expense': ex}}
-    #     fa.put("https://expense-f7db5.firebaseio.com/dailyexpenditure/", key, d1)
-    #     for k in d1:
-    #         print(k, "--", d1[k])
-    #     return render(request, "home.html", {"dic": d1})
+    ph = request.session['phone']
+    dt = request.POST.get("date")
+    it = request.POST.get("expenselist")
+    ex = request.POST.get("exp")
+    u = Userdetails(date=dt, list=it, expense=ex, phone_no=ph)
+    u.save()
+    e = Userdetails.objects.filter(phone_no=ph).all()
+    if(e == None):
+        return render(request, "home.html", {'fd': 'NO friends'})
     return render(request, "home.html")
 
-def saveDetails(request):
-    f = request.POST.get("fname")
 
-    d2= fa.get("friendsList/", None)
-    if d2 == None:
-        key = 101
-        d1 = {key: f}
-        print(d1)
-        fa.put("https://expense-f7db5.firebaseio.com/friendsList/", key, d1)
-    else:
-        for x in d2:
-            key = x
-        key = int(key) + 1
-        d1 = {key: f}
-        fa.put("https://expense-f7db5.firebaseio.com/friendsList/", key, d1)
-        for k in d1:
-            print(k, "--", d1[k])
-        return render(request, "home.html", {"dic": d1})
-    m = {'m': 'friend added'}
-    return render(request, "home.html", m)
+def saveDetails(request):
+    p = request.session['phone']
+    f = request.POST.get("fname")
+    fl = friendsList(phone_no=p, friend=f)
+    fl.save()
+    return render(request, "home.html", {'phone': p})
 
 def showfriends(request):
-    d3 = fa.get('friendsList/', None)
+    d3 = friendsList.objects.filter(phone_no=request.session['phone'])
+
+
     if d3==None:
         return render(request, 'home.html', {'msg': 'No Data Available'})
     else:
         return render(request, 'home.html', {'d3': d3})
-    return render(request, "home.html")
 
 
 def deleteRecord(request):
     i = request.POST.get('delete')
-    fa.delete('friendsList/', i)
+    friendsList.objects.filter(phone_no=request.session['phone']).delete()
     return showfriends(request)
+
+
+def view(request):
+    if (request.method=='POST'):
+        s_date = request.POST.get('start')
+        e_date = request.POST.get('end')
+
+        format_str = '%Y-%m-%d'
+        sdate_obj = datetime.datetime.strptime(s_date, format_str).date()
+        edate_obj = datetime.datetime.strptime(e_date, format_str).date()
+
+        ph = Userdetails.objects.filter(phone_no=request.session['phone'])
+        res = list(ph)
+        sum =0
+        for x in res:
+            if x.date >= sdate_obj and x.date<=edate_obj:
+                sum += int(x.expense)
+                return render(request, "view.html", {'sum':sum})
+            else:
+                f = friendsList.object.filter(phone_no=request.session['phone'])
+                r = list(f)
+                sum += int(x.expense)/len(r)
+                return render(request, "view.html", {'sum': sum})
+    return render(request, "view.html",)

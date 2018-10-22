@@ -19,11 +19,12 @@ from django.urls import path
 from dailyExpense import views
 
 urlpatterns = [
-    path('', views.expenseIndex),
+    path('', views.expenseIndex,name='logout'),
     path('login_data/', views.loginData),
     path('register_data/', views.registerData),
     path('detail/', views.showdetails),
     path('save/', views.saveDetails),
     path('showfriend/', views.showfriends),
     path('delete/', views.deleteRecord),
+    path('view/', views.view)
 ]
